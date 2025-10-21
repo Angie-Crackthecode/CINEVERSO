@@ -1,1 +1,18 @@
 @import "tailwindcss";
+
+/* Oculta la barra de scroll del carrusel */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+/* Estilos para la barra de desplazamiento personalizada */
+::-webkit-scrollbar {
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #00C8D7;
+  border-radius: 4px;
+}

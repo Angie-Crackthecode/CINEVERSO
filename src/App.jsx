@@ -1,35 +1,45 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import { Routes, Route } from "react-router-dom";
+import Inicio from "./Paginas/Inicio";
+import PeliTops from "./Paginas/PeliTops";
+import PeliKids from "./Paginas/PeliKids";
+import PeliDocumentales from "./Paginas/PeliDocumentales";
+import PeliLibros from "./Paginas/PeliLibros";
+import PeliAsiaticas from "./Paginas/PeliAsiaticas";
+import Contacto from "./Paginas/Contacto";
+import Navbar from "./Componentes/Navbar";
+import Login from "./Paginas/Login";
+import Register from "./Paginas/Register";
+import Carrito from "./Paginas/Carrito";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (query) => {
+    setSearchQuery(query.toLowerCase());
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="min-h-screen bg-[#0B1014] text-white">
+      {/* ✅ Navbar global */}
+      <Navbar onSearch={handleSearch} />
 
-export default App
+      {/* ✅ Rutas */}
+      <main className="p-4">
+        <Routes>
+          <Route path="/" element={<Inicio searchQuery={searchQuery} />} />
+          <Route path="/top" element={<PeliTops />} />
+          <Route path="/kids" element={<PeliKids />} />
+          <Route path="/documentales" element={<PeliDocumentales />} />
+          <Route path="/libros" element={<PeliLibros />} />
+          <Route path="/asiaticas" element={<PeliAsiaticas />} />
+          <Route path="/contacto" element={<Contacto />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/carrito" element={<Carrito />} />
+        </Routes>
+      </main>
+    </div>
+  );
+}
