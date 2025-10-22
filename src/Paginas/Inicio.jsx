@@ -1,11 +1,11 @@
 import { useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import peliculas from "../Componentes/PeliculasData";
 
 export default function Inicio({ searchQuery = "" }) {
   const categorias = ["Top 10", "Basadas en Libros", "Kids", "Documentales", "Asiáticas"];
   const carruseles = useRef({});
 
-  // ✅ Función para moverse con botones o automáticamente
   const scroll = (categoria, direccion) => {
     const contenedor = carruseles.current[categoria];
     if (contenedor) {
@@ -14,22 +14,20 @@ export default function Inicio({ searchQuery = "" }) {
     }
   };
 
-  // ✅ Movimiento automático cada 10 segundos
   useEffect(() => {
     const interval = setInterval(() => {
       categorias.forEach((categoria) => scroll(categoria, "right"));
-    }, 10000); // cada 10 segundos
+    }, 10000);
     return () => clearInterval(interval);
   }, []);
 
-  // ✅ Filtrar películas según el buscador (ahora también por año)
   const peliculasFiltradas = peliculas.filter((peli) => {
     const query = searchQuery.toLowerCase();
     return (
       peli.titulo?.toLowerCase().includes(query) ||
       peli.genero?.toLowerCase().includes(query) ||
       peli.categoria?.toLowerCase().includes(query) ||
-      peli.anio?.toString().includes(query) // 🔹 NUEVA LÍNEA para buscar por año
+      peli.anio?.toString().includes(query)
     );
   });
 
@@ -60,7 +58,7 @@ export default function Inicio({ searchQuery = "" }) {
                 {categoria}
               </h2>
 
-              {/* Botones de flechas a los costados */}
+              {/* Botones de flechas */}
               <button
                 onClick={() => scroll(categoria, "left")}
                 className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-[#0B1014]/70 hover:bg-[#00C8D7] text-white p-2 rounded-full z-10 transition-all"
@@ -74,7 +72,7 @@ export default function Inicio({ searchQuery = "" }) {
                 ▶
               </button>
 
-              {/* Carrusel de películas */}
+              {/* Carrusel */}
               <div
                 ref={(el) => (carruseles.current[categoria] = el)}
                 className="flex gap-4 overflow-x-auto scroll-smooth scrollbar-hide"
@@ -84,14 +82,17 @@ export default function Inicio({ searchQuery = "" }) {
                     key={peli.id || index}
                     className="bg-[#1A1F25] rounded-lg p-3 shadow-md hover:scale-105 transition-transform duration-300 min-w-[180px]"
                   >
-                    <img
-                      src={peli.imagen}
-                      alt={peli.titulo}
-                      className="rounded-lg mb-2 w-full h-48 object-cover"
-                    />
-                    <h3 className="text-lg font-semibold text-white truncate">
-                      {peli.titulo}
-                    </h3>
+                    {/* Imagen y título llevan a la página Detalle */}
+                    <Link to={`/detalle/${peli.id}`}>
+                      <img
+                        src={peli.imagen}
+                        alt={peli.titulo}
+                        className="rounded-lg mb-2 w-full h-48 object-cover cursor-pointer"
+                      />
+                      <h3 className="text-lg font-semibold text-white truncate hover:text-[#00C8D7] transition-colors cursor-pointer">
+                        {peli.titulo}
+                      </h3>
+                    </Link>
                     <p className="text-sm text-[#B0B0B0]">
                       {peli.anio} • {peli.genero}
                     </p>

@@ -1,6 +1,8 @@
 import { useRef } from "react";
+import { useTheme } from "../Context/ThemeContext";
 
 export default function MovieCarousel({ titulo, peliculas }) {
+  const { theme } = useTheme();
   const carruselRef = useRef(null);
 
   const scrollLeft = () => {
@@ -12,7 +14,7 @@ export default function MovieCarousel({ titulo, peliculas }) {
   };
 
   return (
-    <div className="mb-10">
+    <div className={`mb-10 ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
       <h2 className="text-2xl font-bold text-[#00C8D7] mb-3">{titulo}</h2>
       <div className="relative">
         <button
@@ -24,7 +26,7 @@ export default function MovieCarousel({ titulo, peliculas }) {
 
         <div
           ref={carruselRef}
-          className="flex overflow-x-auto space-x-4 scrollbar-hide scroll-smooth px-10"
+          className={`flex overflow-x-auto space-x-4 scrollbar-hide scroll-smooth px-10 bg-gray-900 text-white`}
         >
           {peliculas.map((peli) => (
             <div

@@ -1,33 +1,62 @@
-/* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState, useMemo } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
-const UserContext = createContext(null);
+// 1. Crear el contexto global de usuario
+const UserContext = createContext();
 
-// Hook de conveniencia
-export function useUser() {
-  const ctx = useContext(UserContext);
-  if (!ctx) throw new Error("useUser debe usarse dentro de <UserProvider>");
-  return ctx;
-}
+// 2. Hook personalizado para acceder fácilmente al contexto
+// ESTO ES LO QUE NECESITAS PARA CONSUMIR EL USUARIO
+export const useUser = () => useContext(UserContext);
 
-export function UserProvider({ children  }) {
+// 3. Componente Provider
+export const UserProvider = ({ children }) => {
+    const [user, setUser] = useState(null); 
+    const [isAuthenticated, setIsAuthenticated] = useState(false); 
 
-  const [user, setUser] = useState(null);
-  // Acepta un objeto usuario ya validado (desde el LoginForm)
-  const login = (userObject) => setUser(userObject);
+    // ✅ Cargar usuario activo al iniciar la aplicación
+    useEffect(() => {
+        const storedUser = JSON.parse(localStorage.getItem("usuarioActivo"));
+        if (storedUser) {
+            setUser(storedUser);
+            setIsAuthenticated(true);
+        }
+    }, []);
 
-  // Limpia la sesión
-  const logout = () => setUser(null);
+    // ✅ Iniciar sesión y guardar en localStorage
+    const login = (userData) => {
+        setUser(userData);
+        setIsAuthenticated(true);
+        localStorage.setItem("usuarioActivo", JSON.stringify(userData));
+    };
 
-  const value = useMemo(
-    () => ({
-      user,
-      isAuthenticated: user? true : false,
-      login,
-      logout,
-    }),
-    [user]
-  );
+    // ✅ Registrar (y loguear al instante)
+    const register = (newUser) => {
+        setUser(newUser);
+        setIsAuthenticated(true);
+        localStorage.setItem("usuarioActivo", JSON.stringify(newUser));
+    };
 
-  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
-}
+    // ✅ Cerrar sesión y limpiar localStorage
+    const logout = () => {
+        localStorage.removeItem("usuarioActivo");
+        setUser(null);
+        setIsAuthenticated(false);
+    };
+
+    // ✅ Proveer datos y funciones globales
+    return (
+        <UserContext.Provider 
+            value={{ 
+                user, 
+                isAuthenticated, 
+                login, 
+                register, 
+                logout,
+                // Puedes incluir setUser/setIsAuthenticated si necesitas mutar el estado directamente
+                // setUser,
+                // setIsAuthenticated, 
+            }}
+        >
+            {children}
+        </UserContext.Provider>
+    );
+};

@@ -1,20 +1,31 @@
-import { createContext, useState, useContext, useMemo } from "react";
+// ThemeContext.jsx (MODIFICADO)
+import { createContext, useContext, useState, useMemo } from "react";
 
-const ThemeContext = createContext(null);
+// 1. Crear el contexto
+const ThemeContext = createContext();
 
-//Hook de conveniencia
-export function useTheme(){
-    const ctx = useContext(ThemeContext)
-    if(!ctx) throw new Error("useTheme debe usarse dentro de un ThemeProvider")
-    return ctx
-}
+// 2. Hook personalizado para consumir el contexto
+export const useTheme = () => useContext(ThemeContext);
 
-export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState("light");
-  const toggleTheme = () => setTheme(t => (t === "light" ? "dark" : "light"));
+// 3. Componente Provider
+export const ThemeProvider = ({ children }) => {
+    // 💡 CAMBIAR EL ESTADO INICIAL A 'dark'
+    const [theme, setTheme] = useState('dark'); 
 
-  //Evita re-render innecesario en consumidores del contexto
-  const value = useMemo(() => ({ theme, toggleTheme }), [theme]);
+    // Función para cambiar entre 'light' y 'dark'
+    const toggleTheme = () => {
+        setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
+    };
 
-  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
-}
+    // Usamos useMemo para optimizar y solo recalcular si 'theme' cambia
+    const value = useMemo(() => ({
+        theme,
+        toggleTheme
+    }), [theme]);
+
+    return (
+        <ThemeContext.Provider value={value}>
+            {children}
+        </ThemeContext.Provider>
+    );
+};
