@@ -1,20 +1,48 @@
-import { createContext, useState, useContext, useMemo } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
-const ThemeContext = createContext(null);
+// Crear el contexto
+const UserContext = createContext();
 
-//Hook de conveniencia
-export function useTheme(){
-    const ctx = useContext(ThemeContext)
-    if(!ctx) throw new Error("useTheme debe usarse dentro de un ThemeProvider")
-    return ctx
-}
+// Hook personalizado
+export const useUser = () => useContext(UserContext);
 
-export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState("light");
-  const toggleTheme = () => setTheme(t => (t === "light" ? "dark" : "light"));
+export const UserProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  //Evita re-render innecesario en consumidores del contexto
-  const value = useMemo(() => ({ theme, toggleTheme }), [theme]);
+  // 🔹 Cargar usuario activo si existe
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("usuarioActivo"));
+    if (storedUser) {
+      setUser(storedUser);
+      setIsAuthenticated(true);
+    }
+  }, []);
 
-  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
-}
+  // 🔹 Iniciar sesión manualmente
+  const login = (userData) => {
+    setUser(userData);
+    setIsAuthenticated(true);
+    localStorage.setItem("usuarioActivo", JSON.stringify(userData));
+  };
+
+  // 🔹 Registrar un nuevo usuario (usado en Register.jsx)
+  const register = (newUser) => {
+    setUser(newUser);
+    setIsAuthenticated(true);
+    localStorage.setItem("usuarioActivo", JSON.stringify(newUser));
+  };
+
+  // 🔹 Cerrar sesión
+  const logout = () => {
+    localStorage.removeItem("usuarioActivo");
+    setUser(null);
+    setIsAuthenticated(false);
+  };
+
+  return (
+    <UserContext.Provider value={{ user, isAuthenticated, login, register, logout }}>
+      {children}
+    </UserContext.Provider>
+  );
+};

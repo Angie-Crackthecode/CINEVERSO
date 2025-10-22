@@ -1,6 +1,8 @@
-<<<<<<< HEAD
+// ✅ src/App.jsx
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
+
+// 🧭 Páginas
 import Inicio from "./Paginas/Inicio";
 import PeliTops from "./Paginas/PeliTops";
 import PeliKids from "./Paginas/PeliKids";
@@ -8,57 +10,39 @@ import PeliDocumentales from "./Paginas/PeliDocumentales";
 import PeliLibros from "./Paginas/PeliLibros";
 import PeliAsiaticas from "./Paginas/PeliAsiaticas";
 import Contacto from "./Paginas/Contacto";
-import Navbar from "./Componentes/Navbar";
 import Login from "./Paginas/Login";
 import Register from "./Paginas/Register";
 import Carrito from "./Paginas/Carrito";
+
+// 🧱 Componentes
+import Navbar from "./Componentes/Navbar";
+
+// 🎨 Estilos globales
 import "./App.css";
 
 export default function App() {
   const [searchQuery, setSearchQuery] = useState("");
 
+  // 🔍 Función para manejar la búsqueda
   const handleSearch = (query) => {
     setSearchQuery(query.toLowerCase());
   };
 
   return (
     <div className="min-h-screen bg-[#0B1014] text-white">
-      {/* ✅ Navbar global */}
+      {/* ✅ Navbar global con buscador y rutas */}
       <Navbar onSearch={handleSearch} />
-=======
-import { Route, Routes } from 'react-router-dom'
-import {Inicio} from './Paginas/Inicio'
-import CatalogoPeliculas from './Paginas/PeliLibros'
-import {FormContacto} from './Paginas/Contacto'
-import DetallePelicula from './Paginas/Detalle'
-import { Navbar } from './Componentes/Navbar'
-import './App.css'
 
-function App() {
-  return (
-    <>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Inicio />} />
-        <Route path="/pelislibros" element={<CatalogoPeliculas />} />
-        <Route path="/detalles/:id" element={<DetallePelicula />} />
-        <Route path="/contacto" element={<FormContacto />} />
-      </Routes>
-    </>
-  )
-}
->>>>>>> ee09641dbf65a344a9b78c951bf3ce5120f14abf
-
-      {/* ✅ Rutas */}
+      {/* ✅ Contenido principal con rutas activas */}
       <main className="p-4">
         <Routes>
           <Route path="/" element={<Inicio searchQuery={searchQuery} />} />
-          <Route path="/top" element={<PeliTops />} />
-          <Route path="/kids" element={<PeliKids />} />
-          <Route path="/documentales" element={<PeliDocumentales />} />
-          <Route path="/libros" element={<PeliLibros />} />
-          <Route path="/asiaticas" element={<PeliAsiaticas />} />
-          <Route path="/contacto" element={<Contacto />} />
+          <Route path="/PeliculasTops" element={<PeliTops />} />
+          <Route path="/PeliculasKids" element={<PeliKids />} />
+          <Route path="/PeliAsiáticas" element={<PeliAsiaticas />} />
+          <Route path="/PeliDocumentales" element={<PeliDocumentales />} />
+          <Route path="/PeliLibros" element={<PeliLibros />} />
+          <Route path="/Contacto" element={<Contacto />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/carrito" element={<Carrito />} />

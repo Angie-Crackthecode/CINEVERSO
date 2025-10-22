@@ -1,33 +1,60 @@
-/* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState, useMemo } from "react";
+// ✅ src/Context/UserContext.jsx
+import { createContext, useContext, useState, useEffect } from "react";
 
-const UserContext = createContext(null);
+// Crear el contexto global de usuario
+const UserContext = createContext();
 
-// Hook de conveniencia
-export function useUser() {
-  const ctx = useContext(UserContext);
-  if (!ctx) throw new Error("useUser debe usarse dentro de <UserProvider>");
-  return ctx;
-}
+// Hook personalizado para acceder fácilmente al contexto
+export const useUser = () => useContext(UserContext);
 
-export function UserProvider({ children  }) {
+export const UserProvider = ({ children }) => {
+  const [user, setUser] = useState(null); // usuario activo
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // estado de sesión
 
-  const [user, setUser] = useState(null);
-  // Acepta un objeto usuario ya validado (desde el LoginForm)
-  const login = (userObject) => setUser(userObject);
+  // ✅ Al cargar la app, revisa si hay un usuario guardado
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("usuarioActivo"));
+    if (storedUser) {
+      setUser(storedUser);
+      setIsAuthenticated(true);
+    }
+  }, []);
 
-  // Limpia la sesión
-  const logout = () => setUser(null);
+  // ✅ Iniciar sesión
+  const login = (usuarioData) => {
+    setUser(usuarioData);
+    setIsAuthenticated(true);
+    localStorage.setItem("usuarioActivo", JSON.stringify(usuarioData));
+  };
 
-  const value = useMemo(
-    () => ({
-      user,
-      isAuthenticated: user? true : false,
-      login,
-      logout,
-    }),
-    [user]
+  // ✅ Registrar usuario y loguearlo al instante
+  const register = (usuarioData) => {
+    localStorage.setItem("usuarioActivo", JSON.stringify(usuarioData));
+    setUser(usuarioData);
+    setIsAuthenticated(true);
+  };
+
+  // ✅ Cerrar sesión
+  const logout = () => {
+    localStorage.removeItem("usuarioActivo");
+    setUser(null);
+    setIsAuthenticated(false);
+  };
+
+  // ✅ Proveer datos y funciones globales
+  return (
+    <UserContext.Provider
+      value={{
+        user,
+        setUser, // 🔹 para actualizar desde login
+        isAuthenticated,
+        setIsAuthenticated, // 🔹 para actualizar el estado global
+        login,
+        register,
+        logout,
+      }}
+    >
+      {children}
+    </UserContext.Provider>
   );
-
-  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
-}
+};
