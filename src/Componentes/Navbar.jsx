@@ -88,6 +88,7 @@ export default function Navbar() {
             <FaShoppingCart />
           </button>
 
+
           {/* 👤 Usuario / Login */}
           {isAuthenticated ? (
             <div className="flex items-center gap-3">
