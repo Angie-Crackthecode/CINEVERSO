@@ -36,15 +36,24 @@ export default function App() {
       {/* ✅ Contenido principal con rutas activas */}
       <main className="p-4">
         <Routes>
+          {/* Página principal */}
           <Route path="/" element={<Inicio searchQuery={searchQuery} />} />
+
+          {/* Páginas de películas */}
           <Route path="/PeliculasTops" element={<PeliTops />} />
           <Route path="/PeliculasKids" element={<PeliKids />} />
-          <Route path="/PeliAsiáticas" element={<PeliAsiaticas />} />
+          <Route path="/peliasiaticas" element={<PeliAsiaticas />} />
           <Route path="/PeliDocumentales" element={<PeliDocumentales />} />
           <Route path="/PeliLibros" element={<PeliLibros />} />
+
+          {/* Página de contacto */}
           <Route path="/Contacto" element={<Contacto />} />
+
+          {/* Autenticación */}
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/registro" element={<Register />} />
+
+          {/* Carrito */}
           <Route path="/carrito" element={<Carrito />} />
         </Routes>
       </main>
